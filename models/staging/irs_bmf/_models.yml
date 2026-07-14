@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: stg_irs_bmf__master_file
+    description: >
+      Cleaned and typed IRS Exempt Organizations Business Master File.
+      Source: COPY INTO from Azure Blob Storage (4 regional CSV files).
+      ~1.97M rows representing every tax-exempt organization in the US.
+      Type casting, null handling, and human-readable classification labels applied.
+    columns:
+      - name: ein
+        description: "Employer Identification Number — 9-digit unique identifier"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: organization_name
+        description: "Legal organization name"
+        data_tests:
+          - not_null
+
+      - name: state_code
+        description: "2-letter USPS code. Blank for international orgs (country is in city field instead)."
+
+      - name: zip_code
+        description: "ZIP+4 code. NULL for international orgs (IRS placeholder 00000-0000 converted to NULL)."
+
+      - name: is_domestic
+        description: "TRUE = US state/territory/military/associated state. FALSE = international org."
+        data_tests:
+          - not_null
+
+      - name: country
+        description: "United States for domestic orgs. Country name (parsed from IRS city field) for international. Some IRS country assignments have data quality issues."
+        data_tests:
+          - not_null
+
+      - name: subsection_code
+        description: "IRC 501(c) subsection code"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - '01'
+                  - '02'
+                  - '03'
+                  - '04'
+                  - '05'
+                  - '06'
+                  - '07'
+                  - '08'
+                  - '09'
+                  - '10'
+                  - '12'
+                  - '13'
+                  - '14'
+                  - '15'
+                  - '17'
+                  - '18'
+                  - '19'
+                  - '20'
+                  - '21'
+                  - '22'
+                  - '23'
+                  - '24'
+                  - '25'
+                  - '26'
+                  - '27'
+                  - '28'
+                  - '29'
+                  - '40'
+                  - '50'
+                  - '60'
+                  - '70'
+                  - '71'
+                  - '80'
+                  - '81'
+                  - '82'
+                  - '90'
+                  - '92'
+              config:
+                severity: warn
+
+      - name: tax_exempt_type
+        description: "Human-readable exempt type derived from subsection_code"
+
+      - name: foundation_type
+        description: "Private Foundation, Public Charity, Not 501(c)(3), or Other"
+
+      - name: total_assets
+        description: "Book value of total assets in dollars (NULL if not reported)"
+
+      - name: total_income
+        description: "Computed total income in dollars (can be negative)"
+
+      - name: total_revenue
+        description: "Total revenue from Form 990 in dollars"
+
+      - name: ruling_date
+        description: "Date IRS granted tax-exempt status"
+
+      - name: latest_tax_period
+        description: "End date of most recent tax return filed"
+
+      - name: ntee_code
+        description: "Full NTEE classification code"
+
+      - name: ntee_major_category
+        description: "First letter of NTEE code — major activity category"
+
+      - name: ntee_major_category_name
+        description: "Human-readable name for NTEE major category"
+
+      - name: filing_requirement
+        description: "Human-readable filing requirement (990 Full, 990-EZ, 990-N, etc.)"
+
+      - name: is_contributions_deductible
+        description: "Boolean — whether donations to this org are tax-deductible"
