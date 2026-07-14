@@ -1,0 +1,27 @@
+name: 'nonprofit_intel'
+version: '1.0.0'
+
+profile: 'nonprofit_intel'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  nonprofit_intel:
+    staging:
+      +materialized: view
+      +schema: STAGING
+    intermediate:
+      +materialized: table
+      +schema: INTERMEDIATE
+    marts:
+      +materialized: table
+      +schema: MARTS
