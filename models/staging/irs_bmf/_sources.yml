@@ -1,0 +1,73 @@
+# models/staging/irs_bmf/_sources.yml
+
+version: 2
+
+sources:
+  - name: irs_bmf
+    description: "IRS Exempt Organizations Business Master File — raw CSV data loaded via COPY INTO from Azure Blob Storage"
+    database: NONPROFIT_INTEL_DEV
+    schema: RAW
+    tables:
+      - name: ext_irs_bmf_master
+        description: "~1.97M tax-exempt organizations. Full snapshot, updated monthly by IRS. All columns loaded as VARCHAR."
+        columns:
+          - name: ein
+            description: "Employer Identification Number — 9-digit unique org identifier. Primary key."
+          - name: name
+            description: "Legal organization name as registered with IRS"
+          - name: ico
+            description: "In Care Of — contact person or officer"
+          - name: street
+            description: "Mailing address street"
+          - name: city
+            description: "Mailing address city"
+          - name: state
+            description: "2-letter state code"
+          - name: zip
+            description: "ZIP+4 code"
+          - name: group_code
+            description: "Group Exemption Number. 0000 = independent exemption."
+          - name: subsection_code
+            description: "IRC 501(c) subsection. 03=501(c)(3), 04=501(c)(4), etc."
+          - name: affiliation_code
+            description: "Org grouping. 1=Central, 3=Independent, 9=Subordinate"
+          - name: classification_code
+            description: "Further classification within subsection"
+          - name: ruling_date
+            description: "Date exemption was granted (YYYYMM)"
+          - name: deductibility_code
+            description: "1=Contributions deductible, 2=Not deductible"
+          - name: foundation_code
+            description: "Foundation type. 00=Non-501c3, 02-04=Private, 10-18=Public charity"
+          - name: activity_code
+            description: "Legacy activity codes (pre-1995). Largely obsolete."
+          - name: organization_code
+            description: "Legal form. 1=Corp, 2=Trust, 3=Co-op, 4=Partnership, 5=Association"
+          - name: status_code
+            description: "Exempt status. 01=Unconditional, 02=Conditional, 25=Terminated"
+          - name: tax_period
+            description: "End date of latest tax period filed (YYYYMM)"
+          - name: asset_code
+            description: "Asset size bucket (0-9 scale)"
+          - name: income_code
+            description: "Income size bucket (0-9 scale)"
+          - name: filing_req_code
+            description: "Filing requirement. 01=990, 02=990-EZ, 06=990-N, 03=990-PF"
+          - name: pf_filing_req_code
+            description: "Private foundation filing requirement"
+          - name: accounting_period
+            description: "Fiscal year end month (01-12)"
+          - name: asset_amt
+            description: "Total assets in dollars (VARCHAR — cast in staging)"
+          - name: income_amt
+            description: "Total income in dollars (VARCHAR — cast in staging)"
+          - name: revenue_amt
+            description: "Total revenue in dollars (VARCHAR — cast in staging)"
+          - name: ntee_code
+            description: "NTEE classification code (letter + 2 digits). A=Arts, B=Education, E=Health, etc."
+          - name: sort_name
+            description: "DBA or secondary/trade name"
+          - name: _loaded_at
+            description: "Timestamp when this row was loaded into Snowflake"
+          - name: _source_file
+            description: "Filename this row was loaded from (eo1.csv through eo4.csv)"
